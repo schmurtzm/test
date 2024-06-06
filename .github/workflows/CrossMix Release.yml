@@ -22,15 +22,15 @@ jobs:
         run: |
           TAG="${{ github.ref_name }}"
           echo "BUILD_VERSION=${TAG#v}" >> $GITHUB_ENV
-      - name: Install 7-Zip
+      - name: Install 7-Zip 24.06
         run: |
           mkdir -p /home/runner/work/CrossMix-OS/tools
           wget https://www.7-zip.org/a/7z2406-linux-x64.tar.xz -P /home/runner/work/CrossMix-OS/tools
           tar xvf /home/runner/work/CrossMix-OS/tools/7z2406-linux-x64.tar.xz -C /home/runner/work/CrossMix-OS/tools
-          sudo cp /home/runner/work/CrossMix-OS/tools/7zz /usr/local/bin/
+          # sudo cp /home/runner/work/CrossMix-OS/tools/7zz /usr/local/bin/
       - name: Extract RetroArch cores
         run: |
-          find /home/runner/work/CrossMix-OS/CrossMix-OS/RetroArch/.retroarch/cores -name "*.7z" -execdir 7zz x {} \; -execdir rm {} \;
+          find /home/runner/work/CrossMix-OS/CrossMix-OS/RetroArch/.retroarch/cores -name "*.7z" -execdir /home/runner/work/CrossMix-OS/tools/7zz x {} \; -execdir rm {} \;
       - name: Cleaning image...
         run: |
           find /home/runner/work/CrossMix-OS/CrossMix-OS -type f -name ".gitkeep" -delete
@@ -41,6 +41,8 @@ jobs:
           rm -rf /home/runner/work/CrossMix-OS/CrossMix-OS/.git
           rm -rf /home/runner/work/CrossMix-OS/CrossMix-OS/.github
           ls -la /home/runner/work/CrossMix-OS/CrossMix-OS
+      - name: Install 7-Zip
+        run: sudo apt-get update && sudo apt-get install p7zip-full
       - name: 7zipping release
         run: |
           pwd
