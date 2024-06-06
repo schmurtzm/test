@@ -7,7 +7,9 @@ permissions:
   pull-requests: "read"
 
 on:
-  workflow_dispatch:
+  push:
+    tags:
+      - v*
 
 jobs:
   tagged-release:
@@ -16,46 +18,38 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-
       - name: Get version
         run: |
           TAG="${{ github.ref_name }}"
           echo "BUILD_VERSION=${TAG#v}" >> $GITHUB_ENV
-
-      - name: Install 7-Zip 24.06
+      - name: Install 7-Zip
         run: |
-          mkdir -p /root/tools
-          wget https://www.7-zip.org/a/7z2406-linux-x64.tar.xz -P /root/tools
-          tar xvf /root/tools/7z2406-linux-x64.tar.xz -C /root/workspace/test/tools
-          mv /root/workspace/test/tools/7zz /usr/local/bin/7zz
-
+          mkdir -p /home/runner/work/test/tools
+          wget https://www.7-zip.org/a/7z2406-linux-x64.tar.xz -P /home/runner/work/test/tools
+          tar xvf /home/runner/work/test/tools/7z2406-linux-x64.tar.xz -C /home/runner/work/test/tools
+          sudo cp /home/runner/work/test/tools/7zz /usr/local/bin/
       - name: Extract RetroArch cores
         run: |
-          find /root/workspace/RetroArch/.retroarch/cores -name "*.7z" -execdir 7zz x {} \; -execdir rm {} \;
-
+          find /home/runner/work/test/CrossMix-OS/RetroArch/.retroarch/cores -name "*.7z" -execdir 7zz x {} \; -execdir rm {} \;
       - name: Cleaning image...
         run: |
-          find ./CrossMix-OS -type f -name ".gitkeep" -delete
-          rm -rf /root/workspace/_assets
-          rm /root/workspace/LICENSE
-          rm /root/workspace/README.md
-          ls -la ./CrossMix-OS
-          rm -rf /root/workspace/.git
-          rm -rf /root/workspace/.github
-          ls -la ./CrossMix-OS
-
-      - name: Install 7-Zip
-        run: sudo apt-get update && sudo apt-get install p7zip-full
-
+          find /home/runner/work/test/CrossMix-OS -type f -name ".gitkeep" -delete
+          rm -rf /home/runner/work/test/CrossMix-OS/_assets
+          rm /home/runner/work/test/CrossMix-OS/LICENSE
+          rm /home/runner/work/test/CrossMix-OS/README.md
+          ls -la /home/runner/work/test/CrossMix-OS
+          rm -rf /home/runner/work/test/CrossMix-OS/.git
+          rm -rf /home/runner/work/test/CrossMix-OS/.github
+          ls -la /home/runner/work/test/CrossMix-OS
       - name: 7zipping release
         run: |
-          7zz a "CrossMix-OS_v${{ env.BUILD_VERSION }}.7z" /root/workspace/.
-
+          pwd
+          7zz a "/home/runner/work/test/CrossMix-OS_v${{ env.BUILD_VERSION }}.7z" /home/runner/work/test/CrossMix-OS/.
       - name: Create Release
         uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           title: "CrossMix-OS v${{ env.BUILD_VERSION }}"
           prerelease: false
-          files: "CrossMix-OS_v${{ env.BUILD_VERSION }}.7z"
+          files: "/home/runner/work/test/CrossMix-OS_v${{ env.BUILD_VERSION }}.7z"
           draft: false
