@@ -31,7 +31,7 @@ jobs:
 
       - name: Extract RetroArch cores
         run: |
-          find /home/runner/work/test/tools/RetroArch/.retroarch/cores -name "*.7z" -execdir 7zz x {} \; -execdir rm {} \;
+          find /home/runner/work/test/RetroArch/.retroarch/cores -name "*.7z" -execdir 7zz x {} \; -execdir rm {} \;
 
       - name: Cleaning image...
         run: |
