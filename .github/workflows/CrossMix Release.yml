@@ -31,17 +31,17 @@ jobs:
 
       - name: Extract RetroArch cores
         run: |
-          find ./CrossMix-OS/RetroArch/.retroarch/cores -name "*.7z" -execdir 7zz x {} \; -execdir rm {} \;
+          find /home/runner/work/test/tools/RetroArch/.retroarch/cores -name "*.7z" -execdir 7zz x {} \; -execdir rm {} \;
 
       - name: Cleaning image...
         run: |
           find ./CrossMix-OS -type f -name ".gitkeep" -delete
-          rm -rf ./CrossMix-OS/_assets
-          rm ./CrossMix-OS/LICENSE
-          rm ./CrossMix-OS/README.md
+          rm -rf /home/runner/work/test/tools/_assets
+          rm /home/runner/work/test/tools/LICENSE
+          rm /home/runner/work/test/tools/README.md
           ls -la ./CrossMix-OS
-          rm -rf ./CrossMix-OS/.git
-          rm -rf ./CrossMix-OS/.github
+          rm -rf /home/runner/work/test/tools/.git
+          rm -rf /home/runner/work/test/tools/.github
           ls -la ./CrossMix-OS
 
       - name: Install 7-Zip
@@ -49,7 +49,7 @@ jobs:
 
       - name: 7zipping release
         run: |
-          7zz a "CrossMix-OS_v${{ env.BUILD_VERSION }}.7z" ./CrossMix-OS/.
+          7zz a "CrossMix-OS_v${{ env.BUILD_VERSION }}.7z" /home/runner/work/test/tools/.
 
       - name: Create Release
         uses: marvinpinto/action-automatic-releases@latest
