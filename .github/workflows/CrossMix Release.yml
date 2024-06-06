@@ -24,24 +24,24 @@ jobs:
 
       - name: Install 7-Zip 24.06
         run: |
-          mkdir -p /home/runner/work/test/tools
-          wget https://www.7-zip.org/a/7z2406-linux-x64.tar.xz -P /home/runner/work/test/tools
-          tar xvf /home/runner/work/test/tools/7z2406-linux-x64.tar.xz -C /home/runner/work/test/tools
-          mv /home/runner/work/test/tools/7zz /usr/local/bin/7zz
+          mkdir -p /root/tools
+          wget https://www.7-zip.org/a/7z2406-linux-x64.tar.xz -P /root/tools
+          tar xvf /root/tools/7z2406-linux-x64.tar.xz -C /root/workspace/test/tools
+          mv /root/workspace/test/tools/7zz /usr/local/bin/7zz
 
       - name: Extract RetroArch cores
         run: |
-          find /home/runner/work/test/RetroArch/.retroarch/cores -name "*.7z" -execdir 7zz x {} \; -execdir rm {} \;
+          find /root/workspace/RetroArch/.retroarch/cores -name "*.7z" -execdir 7zz x {} \; -execdir rm {} \;
 
       - name: Cleaning image...
         run: |
           find ./CrossMix-OS -type f -name ".gitkeep" -delete
-          rm -rf /home/runner/work/test/_assets
-          rm /home/runner/work/test/LICENSE
-          rm /home/runner/work/test/README.md
+          rm -rf /root/workspace/_assets
+          rm /root/workspace/LICENSE
+          rm /root/workspace/README.md
           ls -la ./CrossMix-OS
-          rm -rf /home/runner/work/test/.git
-          rm -rf /home/runner/work/test/.github
+          rm -rf /root/workspace/.git
+          rm -rf /root/workspace/.github
           ls -la ./CrossMix-OS
 
       - name: Install 7-Zip
@@ -49,7 +49,7 @@ jobs:
 
       - name: 7zipping release
         run: |
-          7zz a "CrossMix-OS_v${{ env.BUILD_VERSION }}.7z" /home/runner/work/test/.
+          7zz a "CrossMix-OS_v${{ env.BUILD_VERSION }}.7z" /root/workspace/.
 
       - name: Create Release
         uses: marvinpinto/action-automatic-releases@latest
